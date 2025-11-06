@@ -1,0 +1,15 @@
+{
+  "name": "rule-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Interactive dashboard for managing rule definitions.",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "vercel build",
+    "start": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "devDependencies": {
+    "vercel": "^33.2.0"
+  }
+}
