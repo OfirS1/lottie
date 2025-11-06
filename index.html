@@ -5,9 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rule Dashboard</title>
   <link rel="stylesheet" href="styles.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600&display=swap" rel="stylesheet" />
 </head>
 <body>
   <header class="page-header">
@@ -18,6 +15,26 @@
   </header>
 
   <main class="container">
+    <section class="notice" aria-live="polite">
+      <div class="notice__icon" aria-hidden="true">🔒</div>
+      <div class="notice__content">
+        <h2>Private by default</h2>
+        <p>
+          The rules you view or edit stay entirely on this device. Nothing is uploaded or sent to a
+          server.
+        </p>
+        <p>
+          The page runs without third-party resources, so you can even disconnect from the internet
+          after it loads and keep working offline.
+        </p>
+        <p class="notice__meta">Last saved locally: <span id="lastSaved">No changes saved yet</span></p>
+        <div class="notice__actions">
+          <button type="button" class="btn btn--ghost" id="downloadButton">Download JSON</button>
+          <button type="button" class="btn btn--ghost btn--danger" id="resetButton">Reset to defaults</button>
+        </div>
+      </div>
+    </section>
+
     <section class="panel">
       <div class="panel__header">
         <h2>Existing Rules</h2>
