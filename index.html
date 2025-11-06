@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rule Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <header class="page-header">
+    <div class="container">
+      <h1>Rule Management Dashboard</h1>
+      <p class="subtitle">View, edit, and expand your rule set with ease.</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="panel">
+      <div class="panel__header">
+        <h2>Existing Rules</h2>
+        <div class="panel__search">
+          <label for="searchInput" class="sr-only">Search rules</label>
+          <input type="search" id="searchInput" placeholder="Search by name, ID, or description" />
+          <span class="panel__count" id="ruleCount"></span>
+        </div>
+      </div>
+      <div class="table-wrapper">
+        <table id="rulesTable">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Rule Name (English)</th>
+              <th scope="col">Rule ID</th>
+              <th scope="col">Description (Hebrew)</th>
+              <th scope="col" class="actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel__header">
+        <h2>Add a New Rule</h2>
+      </div>
+      <form id="addRuleForm" class="form-grid">
+        <div class="form-field">
+          <label for="newName">Rule Name (English)</label>
+          <input type="text" id="newName" required placeholder="Enter the rule name" />
+        </div>
+        <div class="form-field">
+          <label for="newId">Rule ID</label>
+          <input type="number" id="newId" required min="0" step="1" placeholder="Enter the rule ID" />
+        </div>
+        <div class="form-field form-field--full">
+          <label for="newDescription">Description (Hebrew)</label>
+          <textarea id="newDescription" required placeholder="תיאור בעברית"></textarea>
+        </div>
+        <button type="submit" class="btn btn--primary">Add Rule</button>
+      </form>
+    </section>
+  </main>
+
+  <template id="ruleRowTemplate">
+    <tr>
+      <td class="rule-index"></td>
+      <td data-field="name"></td>
+      <td data-field="id"></td>
+      <td data-field="description"></td>
+      <td class="actions">
+        <button type="button" class="btn btn--ghost edit-btn">Edit</button>
+        <button type="button" class="btn btn--ghost btn--danger delete-btn">Delete</button>
+      </td>
+    </tr>
+  </template>
+
+  <script src="script.js" type="module"></script>
+</body>
+</html>
