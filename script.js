@@ -43,6 +43,16 @@ const setStorageItem = (key, value) => {
   }
 };
 
+const removeStorageItem = (key) => {
+  const storage = resolveStorage();
+  if (!storage) return;
+  try {
+    storage.removeItem(key);
+  } catch (error) {
+    console.warn('Unable to clear local data:', error);
+  }
+};
+
 const defaultRules = [
   { name: 'Register date equals pay date', id: '5', description: 'תאריך הרישום זהה לתאריך התשלום' },
   { name: 'Register date in last week', id: '3', description: 'תאריך רישום מהשבוע האחרון' },
@@ -384,7 +394,9 @@ if (resetButton) {
     }
     rules = withNumbers(defaultRules);
     filteredRules = [...rules];
-    persistRules();
+    removeStorageItem(STORAGE_KEY);
+    removeStorageItem(STORAGE_TIMESTAMP_KEY);
+    updateLastSaved();
     renderTable();
   });
 }

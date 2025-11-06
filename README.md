@@ -8,6 +8,9 @@ The dashboard runs entirely in the browser. All edits are saved to `localStorage
 opened the page—no data is transmitted to a server. Use the **Download JSON** button to export the
 current rule set or the **Reset to defaults** button to restore the original data.
 
+To avoid any background calls, the UI relies only on system fonts and bundled assets. You can load
+the page, disconnect from the internet, and continue editing without losing your work.
+
 ## Local development
 
 ```bash
