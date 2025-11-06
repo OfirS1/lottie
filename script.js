@@ -3,145 +3,30 @@ const ruleCount = document.querySelector('#ruleCount');
 const addRuleForm = document.querySelector('#addRuleForm');
 const searchInput = document.querySelector('#searchInput');
 const rowTemplate = document.querySelector('#ruleRowTemplate');
-const downloadButton = document.querySelector('#downloadButton');
-const resetButton = document.querySelector('#resetButton');
-const lastSavedDisplay = document.querySelector('#lastSaved');
 
-const STORAGE_KEY = 'rule-dashboard-data';
-const STORAGE_TIMESTAMP_KEY = 'rule-dashboard-last-saved';
-
-const resolveStorage = () => {
-  try {
-    if (typeof window === 'undefined' || !window.localStorage) {
-      return null;
-    }
-    return window.localStorage;
-  } catch (error) {
-    console.warn('Local storage is unavailable:', error);
-    return null;
-  }
-};
-
-const getStorageItem = (key) => {
-  const storage = resolveStorage();
-  if (!storage) return null;
-  try {
-    return storage.getItem(key);
-  } catch (error) {
-    console.warn('Unable to read from local storage:', error);
-    return null;
-  }
-};
-
-const setStorageItem = (key, value) => {
-  const storage = resolveStorage();
-  if (!storage) return;
-  try {
-    storage.setItem(key, value);
-  } catch (error) {
-    console.warn('Unable to persist data locally:', error);
-  }
-};
-
-const removeStorageItem = (key) => {
-  const storage = resolveStorage();
-  if (!storage) return;
-  try {
-    storage.removeItem(key);
-  } catch (error) {
-    console.warn('Unable to clear local data:', error);
-  }
-};
-
-const defaultRules = [
-  { name: 'Register date equals pay date', id: '5', description: 'תאריך הרישום זהה לתאריך התשלום' },
-  { name: 'Register date in last week', id: '3', description: 'תאריך רישום מהשבוע האחרון' },
-  { name: 'Register day equals birthday', id: '25', description: 'יום הרשמה שווה ליום הולדת' },
-  { name: 'Register month equals birth month', id: '2', description: 'חודש הרשמה שווה לחודש יומולדת' },
-  { name: 'No redeem in week', id: '95', description: 'אין מימוש/משיכה השבוע' },
-  { name: 'No pay in week', id: '3', description: 'אין תשלום השבוע' },
-  { name: '0-3 users added the current user phone number', id: '20', description: '0-3 משתמשים הוסיפו את הטלפון הזה' },
-  { name: 'Birthday is 24 years ago on same date', id: '2', description: 'יום הולדת 24 שנים בדיוק באותו התאריך' },
-  { name: 'No contacts on phone', id: '20', description: 'אין אנשי קשר בטלפון' },
-  { name: 'No waze/facebook/whatsapp installed', id: '1', description: 'אין וויז/פייסבוק/וואצאפ בטלפון' },
-  { name: 'Blockchain app installed', id: '11', description: "אפליקציית בלוקצ'יין מותקנת" },
-  { name: 'Time zone not Jerusalem', id: '13', description: 'זמן מכשיר לא לפי ירושלים' },
-  { name: 'Same Device UUID', id: '1', description: 'אותו uuid של מכשיר' },
-  { name: 'Registered in last 3 days & >1 Israeli ID', id: '1', description: 'משתמש שנרשם בשלושה ימים האחרונים ויש לו יותר מת.ז אחת' },
-  { name: 'Signed up & paid same day >1500', id: '10', description: 'נרשם ושילם באותו היום מעל 1500' },
-  { name: 'Banned By Low Wallet Score', id: '0', description: 'לא פעיל' },
-  { name: 'First transaction day', id: '2', description: 'תשלום ראשון באותו היום' },
-  { name: 'Suspicious Fingerprint', id: '70', description: 'טביעת מכשיר חשודה' },
-  { name: 'UUID recently changed', id: '0', description: 'uuid השתנה לאחרונה' }
+const rules = [
+  { number: 1, name: 'Register date equals pay date', id: '5', description: 'תאריך הרישום זהה לתאריך התשלום' },
+  { number: 2, name: 'Register date in last week', id: '3', description: 'תאריך רישום מהשבוע האחרון' },
+  { number: 3, name: 'Register day equals birthday', id: '25', description: 'יום הרשמה שווה ליום הולדת' },
+  { number: 4, name: 'Register month equals birth month', id: '2', description: 'חודש הרשמה שווה לחודש יומולדת' },
+  { number: 5, name: 'No redeem in week', id: '95', description: 'אין מימוש/משיכה השבוע' },
+  { number: 6, name: 'No pay in week', id: '3', description: 'אין תשלום השבוע' },
+  { number: 7, name: '0-3 users added the current user phone number', id: '20', description: '0-3 משתמשים הוסיפו את הטלפון הזה' },
+  { number: 8, name: 'Birthday is 24 years ago on same date', id: '2', description: 'יום הולדת 24 שנים בדיוק באותו התאריך' },
+  { number: 9, name: 'No contacts on phone', id: '20', description: 'אין אנשי קשר בטלפון' },
+  { number: 10, name: 'No waze/facebook/whatsapp installed', id: '1', description: 'אין וויז/פייסבוק/וואצאפ בטלפון' },
+  { number: 11, name: 'Blockchain app installed', id: '11', description: 'אפליקציית בלוקצ\'יין מותקנת' },
+  { number: 12, name: 'Time zone not Jerusalem', id: '13', description: 'זמן מכשיר לא לפי ירושלים' },
+  { number: 13, name: 'Same Device UUID', id: '1', description: 'אותו uuid של מכשיר' },
+  { number: 14, name: 'Registered in last 3 days & >1 Israeli ID', id: '1', description: 'משתמש שנרשם בשלושה ימים האחרונים ויש לו יותר מת.ז אחת' },
+  { number: 15, name: 'Signed up & paid same day >1500', id: '10', description: 'נרשם ושילם באותו היום מעל 1500' },
+  { number: 16, name: 'Banned By Low Wallet Score', id: '0', description: 'לא פעיל' },
+  { number: 17, name: 'First transaction day', id: '2', description: 'תשלום ראשון באותו היום' },
+  { number: 18, name: 'Suspicious Fingerprint', id: '70', description: 'טביעת מכשיר חשודה' },
+  { number: 19, name: 'UUID recently changed', id: '0', description: 'uuid השתנה לאחרונה' }
 ];
 
-const withNumbers = (rules) =>
-  rules.map((rule, index) => ({
-    ...rule,
-    number: index + 1
-  }));
-
-const parseStoredRules = (value) => {
-  if (!value) return null;
-  try {
-    const parsed = JSON.parse(value);
-    if (!Array.isArray(parsed)) return null;
-    return parsed
-      .filter((rule) => rule && typeof rule === 'object')
-      .map((rule) => ({
-        name: String(rule.name ?? '').trim(),
-        id: String(rule.id ?? '').trim(),
-        description: String(rule.description ?? '').trim()
-      }))
-      .filter((rule) => rule.name && rule.id && rule.description);
-  } catch (error) {
-    console.error('Unable to parse saved rules:', error);
-    return null;
-  }
-};
-
-const loadRules = () => {
-  const storedRules = parseStoredRules(getStorageItem(STORAGE_KEY));
-  if (storedRules && storedRules.length) {
-    return withNumbers(storedRules);
-  }
-  return withNumbers(defaultRules);
-};
-
-let rules = loadRules();
 let filteredRules = [...rules];
-
-const saveTimestamp = (isoString) => {
-  setStorageItem(STORAGE_TIMESTAMP_KEY, isoString);
-};
-
-const updateLastSaved = () => {
-  if (!lastSavedDisplay) return;
-  const savedValue = getStorageItem(STORAGE_TIMESTAMP_KEY);
-  if (!savedValue) {
-    lastSavedDisplay.textContent = 'No changes saved yet';
-    return;
-  }
-  try {
-    const savedDate = new Date(savedValue);
-    if (Number.isNaN(savedDate.getTime())) {
-      lastSavedDisplay.textContent = 'No changes saved yet';
-      return;
-    }
-    lastSavedDisplay.textContent = savedDate.toLocaleString();
-  } catch (error) {
-    console.error('Unable to read last saved timestamp:', error);
-    lastSavedDisplay.textContent = 'No changes saved yet';
-  }
-};
-
-const persistRules = () => {
-  const payload = rules.map(({ number, ...rest }) => rest);
-  setStorageItem(STORAGE_KEY, JSON.stringify(payload));
-  const now = new Date().toISOString();
-  saveTimestamp(now);
-  updateLastSaved();
-};
 
 const createRow = (rule) => {
   const fragment = rowTemplate.content.cloneNode(true);
@@ -173,22 +58,9 @@ const createRow = (rule) => {
 
 const renderTable = () => {
   rulesTableBody.innerHTML = '';
-  if (!filteredRules.length) {
-    const emptyRow = document.createElement('tr');
-    const emptyCell = document.createElement('td');
-    emptyCell.colSpan = 5;
-    emptyCell.className = 'empty-state';
-    emptyCell.textContent = searchInput.value.trim()
-      ? 'No rules match your search yet.'
-      : 'Add your first rule to get started.';
-    emptyRow.appendChild(emptyCell);
-    rulesTableBody.appendChild(emptyRow);
-  } else {
-    filteredRules.forEach((rule) => {
-      rulesTableBody.appendChild(createRow(rule));
-    });
-  }
-
+  filteredRules.forEach((rule) => {
+    rulesTableBody.appendChild(createRow(rule));
+  });
   ruleCount.textContent = `${filteredRules.length} rule${filteredRules.length !== 1 ? 's' : ''}`;
 };
 
@@ -199,9 +71,8 @@ const deleteRow = (number) => {
   if (ruleIndex === -1) return;
 
   rules.splice(ruleIndex, 1);
-  rules = withNumbers(rules);
-  filteredRules = rules.filter((rule) => matchesSearch(rule, searchInput.value.trim()));
-  persistRules();
+  filteredRules = filteredRules.filter((rule) => rule.number !== number);
+  reindexRules();
   renderTable();
 };
 
@@ -278,21 +149,23 @@ const saveRow = (row, number) => {
     return;
   }
 
-  rules[ruleIndex] = {
-    ...rules[ruleIndex],
-    name: newName,
-    id: newId,
-    description: newDescription
-  };
+  rules[ruleIndex].name = newName;
+  rules[ruleIndex].id = newId;
+  rules[ruleIndex].description = newDescription;
 
-  rules = withNumbers(rules);
   filteredRules = rules.filter((ruleItem) => matchesSearch(ruleItem, searchInput.value.trim()));
-  persistRules();
   renderTable();
 };
 
 const cancelEditingRow = () => {
   renderTable();
+};
+
+const reindexRules = () => {
+  rules.forEach((rule, index) => {
+    rule.number = index + 1;
+  });
+  filteredRules = rules.filter((rule) => matchesSearch(rule, searchInput.value.trim()));
 };
 
 const matchesSearch = (rule, query) => {
@@ -321,15 +194,14 @@ addRuleForm.addEventListener('submit', (event) => {
   }
 
   const newRule = {
+    number: rules.length + 1,
     name,
     id,
     description
   };
 
-  rules.push({ ...newRule, number: rules.length + 1 });
-  rules = withNumbers(rules);
+  rules.push(newRule);
   filteredRules = rules.filter((rule) => matchesSearch(rule, searchInput.value.trim()));
-  persistRules();
   renderTable();
 
   addRuleForm.reset();
@@ -370,36 +242,4 @@ rulesTableBody.addEventListener('click', (event) => {
   }
 });
 
-if (downloadButton) {
-  downloadButton.addEventListener('click', () => {
-    const payload = rules.map(({ number, ...rest }) => rest);
-    const blob = new Blob([JSON.stringify(payload, null, 2)], {
-      type: 'application/json'
-    });
-    const url = URL.createObjectURL(blob);
-    const tempLink = document.createElement('a');
-    tempLink.href = url;
-    tempLink.download = `rules-${new Date().toISOString().slice(0, 10)}.json`;
-    document.body.appendChild(tempLink);
-    tempLink.click();
-    document.body.removeChild(tempLink);
-    URL.revokeObjectURL(url);
-  });
-}
-
-if (resetButton) {
-  resetButton.addEventListener('click', () => {
-    if (!confirm('Reset the dashboard to the original rules?')) {
-      return;
-    }
-    rules = withNumbers(defaultRules);
-    filteredRules = [...rules];
-    removeStorageItem(STORAGE_KEY);
-    removeStorageItem(STORAGE_TIMESTAMP_KEY);
-    updateLastSaved();
-    renderTable();
-  });
-}
-
-updateLastSaved();
 renderTable();
